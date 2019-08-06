@@ -1,0 +1,7 @@
+<p>Here are your reserved games, <%= @user.username %>
+
+<% @user.games.each do |game| %>
+  <ul>
+    <li><a href="/games/<%=game.id%>"><%= game.name %></a></li>
+  </ul>
+<% end %>
