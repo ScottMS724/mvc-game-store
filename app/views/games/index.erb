@@ -1,0 +1,5 @@
+<% @games.each do |game| %>
+  <% game.name %> <br>
+  <% game.rating %> <br>
+  <a href = "/games/<%= game.id%>/edit">Edit</a> <br>
+<% end %> 
