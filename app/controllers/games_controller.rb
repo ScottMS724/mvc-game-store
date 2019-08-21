@@ -3,7 +3,7 @@ class GamesController < ApplicationController
   get "/games" do
     redirect_if_not_logged_in 
     @games = Game.all 
-    erb: :'games/index'
+    erb :'games/index'
   end
   
   get "/games/new" do
