@@ -5,7 +5,7 @@ class UsersController < ApplicationController
       redirect '/games'
     end
 
-    @user = User.find(params[:id])
+    @user = User.find_by_slug(params[:slug])
     if !@user.nil? && @user == current_user
       erb :'users/show'
     else
@@ -14,26 +14,27 @@ class UsersController < ApplicationController
   end
 
   get '/signup' do
-    if !session[:user_id]
+    if !logged_in?
       erb :'users/new'
     else
-      redirect to '/games'
-    end
-  end
-
-  post '/signup' do 
-    if params[:username] == "" || params[:password] == ""
-      redirect to '/signup'
-    else
-      @user = User.create(:username => params[:username], :password => params[:password])
-      session[:user_id] = @user.id
       redirect '/games'
     end
   end
 
+  post '/signup' do 
+    @user = User.new(username: params["username"], password: params["password"])
+
+    if @user.save && !@user.username.empty?
+      @user.save
+      session[:user_id] = @user.id
+      redirect "/games"
+    else
+      redirect "/signup"
+    end
+  end
+
   get '/login' do 
-    @error_message = params[:error]
-    if !session[:user_id]
+    if !logged_in?
       erb :'users/login'
     else
       redirect '/games'
@@ -41,22 +42,18 @@ class UsersController < ApplicationController
   end
 
   post '/login' do
-    user = User.find_by(:username => params[:username])
-    if user && user.authenticate(params[:password])
-      session[:user_id] = user.id
+    @user = User.find_by(:username => params[:username])
+    if @user && user.authenticate(params[:password])
+      session[:user_id] = @user.id
       redirect "/games"
     else
-      redirect to '/signup'
+      redirect '/login'
     end
   end
 
   get '/logout' do
-    if session[:user_id] != nil
-      session.destroy
-      redirect to '/login'
-    else
-      redirect to '/'
-    end
-  end
+    session.clear 
+    redirect '/login'
+  end 
   
 end 
