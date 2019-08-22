@@ -1,5 +1,4 @@
-<p> <%= @game.name %> </p>
-<p> <%= @game.rating %> </p>
+<p> <%= @game.name %> - <%= @game.rating %>
 
 <form method = "post" action = "/games/<%= @game.id %>/delete">
   <input id="hidden" type="hidden" name="_method" value="delete">

@@ -18,8 +18,8 @@ class GamesController < ApplicationController
   end
   
   post '/games' do
-    if !params[:name].empty?
-      @game = Game.create(name: params[:name])
+    if !params[:name].empty? && !params[:rating].empty?
+      @game = Game.create(name: params[:name], rating: params[:rating])
     else
       redirect "/games/new"
     end
