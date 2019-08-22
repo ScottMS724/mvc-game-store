@@ -53,7 +53,7 @@ class GamesController < ApplicationController
     end
   end 
   
-  post "/games/:id" do
+  patch "/games/:id" do
     @game = Game.find(params[:id])
     @game.update(name: params[:name])
     @game.update(rating: params[:rating])

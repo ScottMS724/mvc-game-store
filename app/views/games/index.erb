@@ -1,5 +1,6 @@
-<h1> Welcome, <% @user.username %> </h1>
+<h1>Welcome, <%= @user.username %></h1>
 
-<%@games.each do |game|%>
-  <p><%=game.name%></p><br>
-<%end%>
+<% @games.each do |game| %>
+  <p><%= game.name %></p> <br>
+  <p><%= game.rating %></p> <br>
+<% end %>

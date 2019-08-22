@@ -1,11 +1,13 @@
 <h1>Edit <%= @game.name %></h1>
 
 <form method = "post" action = "/games/<%= @game.id %>">
+  <input id="hidden" type="hidden" name="_method" value="patch">
+  
   <label>Game Name</label>
-  <input type = "text" name = "name" value = "<%= @game.name %>"> <br> 
+  <input type = "text" name = "name"> <br> 
   
   <label>Game Rating (E / T / M)</label>
-  <input type = "text" name = "rating" value = "<%= @game.rating %>"> <br> 
+  <input type = "text" name = "rating"> <br> 
   
   <input type = "submit" value = "Update">
 </form>

@@ -1,3 +1,13 @@
-<%= @game.name %> <br>
-<%= @game.rating %> <br> 
-<a href = "/games/<%= @game.id %>/edit">Edit</a> <br> 
+<p> <%= @game.name %> </p>
+<p> <%= @game.rating %> </p>
+
+<form method = "post" action = "/games/<%= @game.id %>/delete">
+  <input id="hidden" type="hidden" name="_method" value="delete">
+  <input type="submit" value="Unreserve Game">
+</form>
+
+<br></br>
+
+<form method = "get" action = "/games/<%= @game.id %>/edit">
+  <input type="submit" value="Edit Game">
+</form>
