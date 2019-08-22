@@ -14,12 +14,6 @@ class ApplicationController < Sinatra::Base
   end
 
   helpers do
-    def redirect_if_not_logged_in
-      if !logged_in?
-        redirect "/login?error=You must be logged in to do that."
-      end
-    end
-
     def logged_in?
       !!session[:user_id]
     end

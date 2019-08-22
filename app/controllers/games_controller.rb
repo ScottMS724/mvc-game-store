@@ -1,6 +1,7 @@
 class GamesController < ApplicationController
   
-  get "/games" do
+  get '/games' do
+    @games = Game.all 
     if logged_in?
       erb :'games/index'
     else
@@ -8,9 +9,32 @@ class GamesController < ApplicationController
     end
   end
   
-  get "/games/new" do
+  get '/games/new' do
     if logged_in?
       erb :'/games/new'
+    else
+      redirect "/login"
+    end
+  end
+  
+  post '/games' do
+    if !params[:name].empty?
+      @game = Game.create(name: params[:name])
+    else
+      redirect "/games/new"
+    end
+
+    if logged_in?
+      @game.user_id = current_user.id
+      @game.save
+    end
+    redirect "/games"
+  end 
+  
+  get '/games/:id' do
+    @game = Game.find(params[:id])
+    if logged_in?
+      erb :'/games/show'
     else
       redirect "/login"
     end
@@ -29,18 +53,10 @@ class GamesController < ApplicationController
     end
   end 
   
-  get "/games/:id" do
-    @game = Game.find(params[:id])
-    if logged_in?
-      erb :'/games/show'
-    else
-      redirect "/login"
-    end
-  end
-  
   post "/games/:id" do
     @game = Game.find(params[:id])
     @game.update(name: params[:name])
+    @game.update(rating: params[:rating])
       if !@game.name.empty?
         redirect "/games/#{@game.id}"
       else
@@ -48,18 +64,14 @@ class GamesController < ApplicationController
       end
   end 
   
-  post "/games" do
-    if !params[:name].empty?
-      @game = Game.create(name: params[:name])
-    else
-      redirect "/games/new"
-    end
-
-    if logged_in?
-      @game.user_id = current_user.id
-      @game.save
-    end
-    redirect "/games"
-  end 
+  delete '/tweets/:id/delete' do
+    @game = Game.find(params[:id])
+      if logged_in? && @game.user_id == current_user.id
+        @game.destroy
+          redirect "/games"
+      else
+          redirect "/login"
+      end
+  end
   
 end 
