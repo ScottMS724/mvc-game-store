@@ -14,65 +14,79 @@ class GamesController < ApplicationController
     if logged_in?
       erb :'/games/new'
     else
-      redirect "/login"
+      redirect to "/login"
     end
   end
   
-  post '/games' do
-    if !params[:name].empty? && !params[:rating].empty?
-      @game = Game.create(name: params[:name], rating: params[:rating])
-    else
-      redirect "/games/new?error=Invalid name or rating."
-    end
+  post '/games/new' do
+    if params[:name] != ""  
+      game = Game.create(params)
+      game.user_id = session[:user_id]
+      game.save
 
-    if logged_in?
-      @game.user_id = current_user.id
-      @game.save
+      redirect to '/games'
+    else
+      redirect to '/games/new'
     end
-    redirect "/games"
-  end 
+  end
   
   get '/games/:id' do
-    @game = Game.find(params[:id])
     if logged_in?
+      @game = Game.find(params[:id])
       erb :'/games/show'
+    else 
+      redirect to '/login'
+    end 
+  end
+  
+  get '/games/:id/edit' do
+    if logged_in?
+      @game = Game.find(params[:id])
+      erb :'/games/edit'
     else
-      redirect "/login"
+      redirect to '/login'
     end
   end
   
-  get "/games/:id/edit" do
+  patch '/games/:id' do
     if logged_in?
-      @game = Game.find(params[:id])
-      if @game.user_id == current_user.id
-        erb :'/games/edit'
+
+       if params[:name] == ""
+        redirect to "/games/#{params[:id]}/edit"
       else
-        redirect "/games"
+        @game = Game.find(params[:id])
+
+         if @game.user == current_user
+
+           if @game.name != params[:name]
+            @game.name = params[:name]
+            @game.save
+
+             redirect to "/games/#{@game.id}"
+          else
+            redirect to "/games/#{@game.id}/edit"
+          end
+        else
+
+           redirect to '/games'
+        end
       end
     else
-      redirect "/login"
+
+       redirect to '/login'
     end
-  end 
-  
-  patch "/games/:id" do
-    @game = Game.find(params[:id])
-    @game.update(name: params[:name])
-    @game.update(rating: params[:rating])
-      if !@game.name.empty?
-        redirect "/games/#{@game.id}"
-      else
-        redirect "/games/#{@game.id}/edit"
-      end
-  end 
+  end
   
   delete '/games/:id/delete' do
-    @game = Game.find(params[:id])
-      if logged_in? && @game.user_id == current_user.id
-        @game.destroy
-        redirect "/games"
-      else
-        redirect "/login"
+    if logged_in?
+      @game = Game.find(params[:id])
+      if @game.user == current_user
+        @game.delete
       end
+      redirect to '/games'
+    else
+      redirect to '/login'
+    end
   end
   
 end 
