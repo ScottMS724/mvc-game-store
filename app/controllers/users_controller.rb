@@ -34,7 +34,7 @@ class UsersController < ApplicationController
       session[:user_id] = @user.id
       redirect "/games"
     else
-      redirect '/login'
+      redirect "/login?error=Invalid name or password."
     end
   end
 

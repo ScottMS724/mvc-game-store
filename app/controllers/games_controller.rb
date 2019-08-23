@@ -1,11 +1,12 @@
 class GamesController < ApplicationController
   
   get '/games' do
-    @games = Game.all 
-    if logged_in?
-      erb :'games/index'
+      if logged_in?
+      @games = Game.all
+      @user = User.find(session[:user_id])
+      erb :'/games/index'
     else
-      redirect "/login"
+      redirect to '/login'
     end
   end
   
@@ -21,7 +22,7 @@ class GamesController < ApplicationController
     if !params[:name].empty? && !params[:rating].empty?
       @game = Game.create(name: params[:name], rating: params[:rating])
     else
-      redirect "/games/new"
+      redirect "/games/new?error=Invalid name or rating."
     end
 
     if logged_in?
@@ -64,13 +65,13 @@ class GamesController < ApplicationController
       end
   end 
   
-  delete '/tweets/:id/delete' do
+  delete '/games/:id/delete' do
     @game = Game.find(params[:id])
       if logged_in? && @game.user_id == current_user.id
         @game.destroy
-          redirect "/games"
+        redirect "/games"
       else
-          redirect "/login"
+        redirect "/login"
       end
   end
   
