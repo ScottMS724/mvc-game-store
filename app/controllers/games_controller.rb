@@ -61,6 +61,9 @@ class GamesController < ApplicationController
            if @game.name != params[:name]
             @game.name = params[:name]
             @game.save
+           elsif @game.rating != params[:rating]
+            @game.rating = params[:rating]
+            @game.save 
 
              redirect to "/games/#{@game.id}"
           else
