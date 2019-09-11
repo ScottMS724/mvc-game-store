@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   end
   
   post '/signup' do 
-   if !params["username"].empty? && !params["password"].empty?
+   if !params["username"].empty? && !params["password"].empty? && !params["username"].present?
       @user = User.create(params)
       session[:user_id] = @user.id
 
