@@ -45,8 +45,12 @@ class GamesController < ApplicationController
   
   get '/games/:id/edit' do
     if logged_in?
-      @game = Game.find(params[:id])
-      erb :'/games/edit'
+      @game = Game.find_by_id(params[:id])
+      if !@game || @game.user != current_user 
+        redirect to '/login'
+      else 
+        erb :'/games/edit'
+      end 
     else
       redirect to '/login'
     end
