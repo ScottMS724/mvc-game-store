@@ -1,5 +1,5 @@
 <h1>Welcome, <%= @user.username %></h1>
 
 <% @user.games.each do |game| %>
-  <p><%= game.name %> --- Rating: <%= game.rating %> --- ID Number: <%= game.id %></p>
+  <p><%= game.name %> --- Rating: <%= game.rating %> --- ID Number: <%= game.id %> - <a href="/games/<%=game.id%>/edit">Edit Game</a></p>
 <% end %>
