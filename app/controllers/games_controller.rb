@@ -1,21 +1,15 @@
 class GamesController < ApplicationController
   
   get '/games' do
-      if logged_in?
+      redirect_if_not_logged_in
       @games = Game.all
       @user = User.find(session[:user_id])
-      erb :'/games/index'
-    else
-      redirect to '/login'
-    end
+      erb :'/games/index' 
   end
   
   get '/games/new' do
-    if logged_in?
-      erb :'/games/new'
-    else
-      redirect to "/login"
-    end
+    redirect_if_not_logged_in
+    erb :'/games/new'
   end
   
   post '/games/new' do
@@ -31,40 +25,33 @@ class GamesController < ApplicationController
   end
   
   get '/games/:id' do
-    if logged_in?
-      @game = Game.find_by_id(params[:id])
-      if !@game || @game.user != current_user
-        redirect to '/games'
-      else 
-        erb :'/games/show'
-      end 
+    redirect_if_not_logged_in
+    @game = Game.find_by_id(params[:id])
+    if !@game || @game.user != current_user
+      redirect to '/games'
     else 
-      redirect to '/login'
+      erb :'/games/show'
     end 
   end
   
   get '/games/:id/edit' do
-    if logged_in?
-      @game = Game.find_by_id(params[:id])
-      if !@game || @game.user != current_user 
-        redirect to '/login'
-      else 
-        erb :'/games/edit'
-      end 
-    else
+    redirect_if_not_logged_in
+    @game = Game.find_by_id(params[:id])
+    if !@game || @game.user != current_user 
       redirect to '/login'
-    end
+    else 
+      erb :'/games/edit'
+    end 
   end
   
   patch '/games/:id' do
-    if logged_in?
+    redirect_if_not_logged_in
+    if params[:name] == ""
+      redirect to "/games/#{params[:id]}/edit"
+    else
+      @game = Game.find(params[:id])
 
-       if params[:name] == ""
-        redirect to "/games/#{params[:id]}/edit"
-      else
-        @game = Game.find(params[:id])
-
-         if @game.user == current_user
+        if @game.user == current_user
 
            if @game.name != params[:name] || @game.rating != params[:rating]
             @game.name = params[:name]
@@ -80,22 +67,15 @@ class GamesController < ApplicationController
            redirect to '/games'
         end
       end
-    else
-
-       redirect to '/login'
-    end
   end
   
   delete '/games/:id/delete' do
-    if logged_in?
-      @game = Game.find(params[:id])
-      if @game.user == current_user
-        @game.delete
-      end
-      redirect to '/games'
-    else
-      redirect to '/login'
+    redirect_if_not_logged_in
+    @game = Game.find(params[:id])
+    if @game.user == current_user
+      @game.delete
     end
+    redirect to '/games'
   end
   
 end 
